@@ -90,16 +90,16 @@ const SoftPhone = () => {
   };
 
   const toggleMute = () => {
-    if (mediaStreamRef.current) {
-      const audioTracks = mediaStreamRef.current.getAudioTracks();
-      audioTracks.forEach((track) => {
-        track.enabled = isMuted;
-        console.log(`Audio track ${isMuted ? "unmuted" : "muted"}:`, track);
-      });
-      setIsMuted(!isMuted);
+    if (!mediaStreamRef.current) return;
 
-      toast(isMuted ? "Mikrofon açıldı" : "Mikrofon bağlandı");
-    }
+    const newMutedState = !isMuted;
+    mediaStreamRef.current.getAudioTracks().forEach((track) => {
+      track.enabled = !newMutedState;
+      console.log(`Audio track ${newMutedState ? "muted" : "unmuted"}:`, track);
+    });
+
+    setIsMuted(newMutedState);
+    toast(newMutedState ? "Mikrofon bağlandı" : "Mikrofon açıldı");
   };
 
   const endCall = () => {
