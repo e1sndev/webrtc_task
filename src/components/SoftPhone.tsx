@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Phone, Volume2 } from "lucide-react";
+import { Mic, MicOff, Phone, PhoneOff, Volume2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { CallStatus } from "../types/call.type";
@@ -9,6 +9,7 @@ import type { CallStatus } from "../types/call.type";
 const SoftPhone = () => {
   const [callStatus, setCallStatus] = useState<CallStatus>("idle");
   const [callDuration, setCallDuration] = useState(0);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
 
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -81,6 +82,23 @@ const SoftPhone = () => {
     }
   };
 
+  const toggleMute = () => {
+    if (mediaStreamRef.current) {
+      const audioTracks = mediaStreamRef.current.getAudioTracks();
+      audioTracks.forEach((track) => {
+        track.enabled = isMuted;
+        console.log(`Audio track ${isMuted ? "unmuted" : "muted"}:`, track);
+      });
+      setIsMuted(!isMuted);
+
+      toast(isMuted ? "Mikrofon açıldı" : "Mikrofon bağlandı");
+    }
+  };
+
+  const endCall = () => {
+    //
+  };
+
   return (
     <Card className="w-full max-w-md mx-auto shadow-xl border-0 bg-white/90 backdrop-blur-sm">
       <CardHeader>
@@ -125,6 +143,50 @@ const SoftPhone = () => {
               <Phone className="h-5 w-5 mr-2" />
               Zəngi başlat
             </Button>
+          )}
+
+          {callStatus === "connecting" && (
+            <Button
+              disabled
+              size="lg"
+              className="bg-yellow-500 text-white px-6 py-3 rounded-full"
+            >
+              <Phone className="h-5 w-5 mr-2 animate-pulse" />
+              Bağlanır...
+            </Button>
+          )}
+
+          {callStatus === "active" && (
+            <>
+              <Button
+                onClick={toggleMute}
+                size="lg"
+                variant={isMuted ? "destructive" : "secondary"}
+                className="px-6 py-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                {isMuted ? (
+                  <>
+                    <MicOff className="h-5 w-5 mr-2" />
+                    Səsliyə al
+                  </>
+                ) : (
+                  <>
+                    <Mic className="h-5 w-5 mr-2" />
+                    Səssizə al
+                  </>
+                )}
+              </Button>
+
+              <Button
+                onClick={endCall}
+                size="lg"
+                variant="destructive"
+                className="px-6 py-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                <PhoneOff className="h-5 w-5 mr-2" />
+                Zəngi sonlandır
+              </Button>
+            </>
           )}
         </div>
       </CardContent>
