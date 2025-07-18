@@ -1,69 +1,86 @@
-# React + TypeScript + Vite
+# WebRTC Softphone Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project provides a WebRTC-based softphone interface. Users can start and end calls, mute/unmute the microphone, and manage call states. The project is built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Start Call**
+- **End Call**
+- **Mute/Unmute Microphone**
+- **Call State Management (Idle, Calling, In Call, etc.)**
+- **All call logic managed via a `useCall` custom hook**
+- **Modern, user-friendly UI**
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Clone the repository:**
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+   ```sh
+   git clone <repo-url>
+   cd webrtc_task
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+2. **Install dependencies:**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+   ```sh
+   yarn install
+   ```
+
+   or
+
+   ```sh
+   npm install
+   ```
+
+3. **Start the development server:**
+
+   ```sh
+   yarn dev
+   ```
+
+   or
+
+   ```sh
+   npm run dev
+   ```
+
+4. **Open the app:**
+   - Go to `http://localhost:5173` in your browser.
+
+## Usage
+
+- **To start a call:** Click the "Start Call" button.
+- **To end a call:** Click the "End Call" button.
+- **To mute/unmute:** Use the "Mute" or "Unmute" button.
+
+All call functionalities are managed via the `useCall` custom hook located in `src/hooks/useCall.ts`.
+UI components are located in the `src/components/` directory.
+
+## Project Structure
+
+```
+webrtc_task/
+├── src/
+│   ├── components/
+│   │   ├── SoftPhone.tsx
+│   │   └── ui/
+│   │       └── sonner.tsx
+│   ├── hooks/
+│   │   └── useCall.ts
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── package.json
+├── vite.config.ts
+└── README.md
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Notes
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- The project centralizes all call logic in a custom hook for maintainability and scalability.
+- UI and logic are modular and easily customizable.
+- If you encounter errors during development, ensure you open the project from the root directory and that alias settings (`@/`) are correct.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Contributing
+
+To contribute, fork the repository, create a new branch, and submit a pull request.
