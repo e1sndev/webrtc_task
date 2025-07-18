@@ -96,7 +96,24 @@ const SoftPhone = () => {
   };
 
   const endCall = () => {
-    //
+    console.log("Ending call...");
+
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => {
+        track.stop();
+        console.log("Audio track stopped:", track);
+      });
+      mediaStreamRef.current = null;
+    }
+
+    setCallStatus("ended");
+    setIsMuted(false);
+
+    setTimeout(() => {
+      setCallStatus("idle");
+    }, 2000);
+
+    toast.success("Zəng sonlandı");
   };
 
   return (
