@@ -1,11 +1,13 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Volume2 } from "lucide-react";
+import { Phone, Volume2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import type { CallStatus } from "../types/call.type";
 
 const SoftPhone = () => {
-  const [callStatus] = useState<CallStatus>("idle");
+  const [callStatus, setCallStatus] = useState<CallStatus>("idle");
   const [callDuration, setCallDuration] = useState(0);
 
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -51,6 +53,34 @@ const SoftPhone = () => {
     }
   }, [callStatus]);
 
+  const startCall = async () => {
+    try {
+      console.log("Starting call - requesting microphone access...");
+      setCallStatus("connecting");
+
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100,
+        },
+      });
+
+      console.log("Microphone access granted", mediaStream);
+      mediaStreamRef.current = mediaStream;
+
+      setTimeout(() => {
+        setCallStatus("active");
+        console.log("Call status changed to active");
+        toast.success("Zəng başladı");
+      }, 1000);
+    } catch (error) {
+      console.error("Error accessing microphone:", error);
+      setCallStatus("idle");
+      toast.error("Mikrofona çıxış əldə edilmədi");
+    }
+  };
+
   return (
     <Card className="w-full max-w-md mx-auto shadow-xl border-0 bg-white/90 backdrop-blur-sm">
       <CardHeader>
@@ -84,6 +114,19 @@ const SoftPhone = () => {
             <p className="text-sm text-green-700">Zəng davam edir</p>
           </div>
         )}
+
+        <div className="flex justify-center gap-4 mt-10">
+          {callStatus === "idle" && (
+            <Button
+              onClick={startCall}
+              size="lg"
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+            >
+              <Phone className="h-5 w-5 mr-2" />
+              Zəngi başlat
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
