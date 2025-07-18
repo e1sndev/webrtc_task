@@ -29,6 +29,13 @@ const SoftPhone = () => {
         setCallDuration(0);
       }
     }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [callStatus]);
 
   const formatDuration = (seconds: number): string => {
